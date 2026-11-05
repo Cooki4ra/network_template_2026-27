@@ -30,11 +30,12 @@ class Game
 	sf::RenderWindow& window;
 
 	std::shared_ptr<Board> board;
-	mode game_state;
+	mode game_state = mode::MENU;;
 	std::unique_ptr<Server> server;
 	std::unique_ptr<Client> client;
 	std::unique_ptr<sf::Text> host_button;
 	std::unique_ptr<sf::Text> join_button;
-	sf::Font font;
+	std::unique_ptr <sf::Font> font;
+
 };
 

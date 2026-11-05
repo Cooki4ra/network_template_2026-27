@@ -1,6 +1,6 @@
 #include "Server.h"
 
-void::Server::init()
+void Server::init()
 {
 	if (listener == nullptr)
 	{
@@ -18,7 +18,7 @@ void Server::run()
 {
 	while (running)
 	{
-		sf::TcpSocket& c_sock = *connections.emplace_back(std::make_unique<sf::TcpSocket()>);
+		sf::TcpSocket& c_sock = *connections.emplace_back(std::make_unique<sf::TcpSocket>());
 
 		if (listener->accept(c_sock) != sf::Socket::Status::Done)
 		{
