@@ -50,25 +50,25 @@ void Game::render()
 
 void Game::mouseButtonPressed(const sf::Event::MouseButtonPressed* event)
 {
-    //board->mouseButtonPressed(event);
-    //if (game_state == mode::MENU)
-    //{
-    //    if (host_button->getGlobalBounds().contains(sf::Vector2f(event->position)))
-    //    {
-    //        game_state = mode::GAME;
-    //        std::cout << "creating server" << std::endl;
-    //        server = std::make_unique<Server>();
-    //        server->init();
-    //        server->run();
-    //    }
-    //    else if (join_button->getGlobalBounds().contains(sf::Vector2f(event->position)))
-    //    {
-    //        game_state = mode::GAME;
-    //        std::cout << "Connecting to server" << std::endl;
-    //        client = std::make_unique<Client>();
-    //        client->conect();
-    //    }
-    //}
+    board->mouseButtonPressed(event);
+    if (game_state == mode::MENU)
+    {
+        if (host_button->getGlobalBounds().contains(sf::Vector2f(event->position)))
+        {
+            game_state = mode::GAME;
+            std::cout << "creating server" << std::endl;
+            server = std::make_unique<Server>();
+            server->init();
+            server->run();
+        }
+        else if (join_button->getGlobalBounds().contains(sf::Vector2f(event->position)))
+        {
+            game_state = mode::GAME;
+            std::cout << "Connecting to server" << std::endl;
+            client = std::make_unique<Client>();
+            client->conect();
+        }
+    }
 
 }
 
