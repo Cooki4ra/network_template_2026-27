@@ -66,7 +66,7 @@ void Game::mouseButtonPressed(const sf::Event::MouseButtonPressed* event)
             game_state = mode::GAME;
             std::cout << "Connecting to server" << std::endl;
             client = std::make_unique<Client>();
-            client->conect();
+            client->connect();
         }
     }
 
