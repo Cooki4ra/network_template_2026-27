@@ -6,7 +6,7 @@
 class Client
 {
 public:
-	void conect();
+	void connect();
 	void input();
 	void run();
 	std::atomic<bool> running = false;
