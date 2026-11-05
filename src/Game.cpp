@@ -4,9 +4,8 @@
 #include <iostream>
 
 Game::Game(sf::RenderWindow& game_window)
-  : window(game_window)
+    : window(game_window)
 {
-  
 }
 
 Game::~Game()
@@ -17,7 +16,21 @@ Game::~Game()
 bool Game::init()
 {
     board = std::make_shared<Board>(window);
-    board->init();   
+    board->init();  
+
+    font.openFromFile("../Data/Fonts/OpenSans-Bold.ttf");
+    host_button->setFont(font);
+    host_button->setFillColor(sf::Color::White);
+    host_button->setString("Host game");
+    host_button->setCharacterSize(50);
+    host_button->setPosition({100,100});
+
+    join_button->setFont(font);
+    join_button->setString("Join game");
+    join_button->setCharacterSize(50);
+    join_button->setPosition({ 100,180 });
+    join_button->setFillColor(sf::Color::White);
+
 
     return true;
 }
@@ -30,11 +43,33 @@ void Game::update(float dt)
 void Game::render()
 {
     board->render();    
+    window.draw(*host_button);
+    window.draw(*join_button);
+
 }
 
 void Game::mouseButtonPressed(const sf::Event::MouseButtonPressed* event)
 {
-    board->mouseButtonPressed(event);
+    //board->mouseButtonPressed(event);
+    //if (game_state == mode::MENU)
+    //{
+    //    if (host_button->getGlobalBounds().contains(sf::Vector2f(event->position)))
+    //    {
+    //        game_state = mode::GAME;
+    //        std::cout << "creating server" << std::endl;
+    //        server = std::make_unique<Server>();
+    //        server->init();
+    //        server->run();
+    //    }
+    //    else if (join_button->getGlobalBounds().contains(sf::Vector2f(event->position)))
+    //    {
+    //        game_state = mode::GAME;
+    //        std::cout << "Connecting to server" << std::endl;
+    //        client = std::make_unique<Client>();
+    //        client->conect();
+    //    }
+    //}
+
 }
 
 void Game::mouseButtonReleased(const sf::Event::MouseButtonReleased* event)
