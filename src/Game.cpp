@@ -21,6 +21,7 @@ bool Game::init()
     font = std::make_unique<sf::Font>();
     font->openFromFile("../Data/Fonts/OpenSans-Bold.ttf");
     host_button = std::make_unique<sf::Text>(*font);
+
     host_button->setFont(*font);
     host_button->setFillColor(sf::Color::White);
     host_button->setString("Host game");
