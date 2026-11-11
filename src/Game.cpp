@@ -45,6 +45,14 @@ void Game::update(float dt)
 
 }
 
+void Game::getInput(const sf::Event& event)
+{
+    if (event.is<sf::Event::TextEntered>())
+    {
+
+    }
+}
+
 void Game::render()
 { 
     if(game_state == mode::MENU)

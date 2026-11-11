@@ -12,6 +12,7 @@ public:
 	void run();
 	std::atomic<bool> running = false;
 	std::atomic<bool> connected = false;
+	std::string getInput();
 
 private:
 	std::unique_ptr<sf::TcpSocket> socket;
