@@ -1,5 +1,11 @@
 #include "Server.h"
 
+Server::Server(std::shared_ptr<Board> _board) : board(_board)
+{
+
+}
+Server::~Server(){}
+
 void Server::init()
 {
 	if (listener == nullptr)
@@ -54,9 +60,11 @@ void Server::input()
 		std::getline(std::cin, str);
 		std::cin.clear();
 		std::lock_guard<std::mutex> lck(mutex);
+		sf::Packet packet = packData(str);
 		for (std::unique_ptr<sf::TcpSocket>& connection : connections)
 		{
-			connection->send(reinterpret_cast<char*>(str.data()), str.length());
+			connection->send(packet);
+			//i_socket.send(packet);
 		}
 	}
 }
@@ -66,16 +74,21 @@ void Server::listen(sf::TcpSocket& c_socket)
 	bool continue_receiving = true;
 	char data[1028];
 	std::size_t received;
+	sf::Packet packet;
 	while (continue_receiving)
 	{
-		sf::Socket::Status status = c_socket.receive(data, 1028, received);
+		sf::Socket::Status status = c_socket.receive(packet);
 		if (status == sf::Socket::Status::Disconnected)
 		{
 			continue_receiving = false;
 			std::cout << "disconect" << std::endl;
 		}
+		else
+		{
+			unpackData(packet, string, origin, destination);
+		}
 		if (received < 1028) { data[received] = '\0'; }
-		std::cout << reinterpret_cast<char*>(data) << std::endl;
+		//std::cout << reinterpret_cast<char*>(data) << std::endl;
 
 	}
 	c_socket.disconnect();
@@ -90,7 +103,27 @@ void Server::relay(std::string buffer, sf::TcpSocket& c_socket)
 		{
 			connection->send(message, buffer.size());
 		}
+		if (string.length() > 0)
+		{
+			std::cout << string << std::endl;
+		}
+
+		if (origin.x >= 0 && destination.x >= 0)
+		{
+			std::lock_guard<std::mutex> lck(board_mutex);
+			board->moveByCoords(origin, destination);
+		}
 	}
 }
 
+sf::Packet Server::packData(std::string _string, sf::Vector2f _origin, sf::Vector2f _destination) const
+{
+	sf::Packet packet;
+	packet << _string << _origin.x << _origin.y << _destination.x << _destination.y;
+	return packet;
+}
+void Server::unpackData(sf::Packet _packet, std::string _string, sf::Vector2f _origin, sf::Vector2f _destination)
+{
+	_packet >> _string >> _origin.x >> _origin.y >> _destination.x >> _destination.y;
 
+}

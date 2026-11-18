@@ -7,10 +7,10 @@ Board::Board(sf::RenderWindow& _window) : window(_window)
     current_turn = 0;
 }
 
-void Board::update()
-{
-
-}
+//void Board::update()
+//{
+//
+//}
 
 void Board::init()
 {
@@ -98,6 +98,7 @@ void Board::mouseButtonPressed(const sf::Event::MouseButtonPressed* event)
             hover_tile->clicked(event, held_piece);
         }
     }
+
 }
 
 void Board::mouseButtonReleased(const sf::Event::MouseButtonReleased* event)
@@ -216,4 +217,25 @@ void Board::endTurn()
     {
         current_turn = 0;
     }
+}
+void Board::moveByCoords(sf::Vector2f origin, sf::Vector2f destination)
+{
+    if (grid[origin.x + origin.y * grid_size.x]->getPiece() != nullptr)
+    {
+        grid[origin.x + origin.y * grid_size.x]->movePiece(*grid[destination.x + destination.y * grid_size.x]);
+        endTurn();
+    }
+
+}
+
+std::vector<Move> Board::update()
+{
+    std::vector<Move> to_send;
+    if (!moves.empty())
+    {
+        to_send.emplace_back(moves.back());
+        moves.clear();
+    }
+
+    return to_send;
 }

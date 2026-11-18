@@ -44,7 +44,7 @@ void Game::update(float dt)
 {
     if (game_state == mode::GAME)
     {
-        
+
     }
 }
 
@@ -84,7 +84,6 @@ void Game::mouseButtonPressed(const sf::Event::MouseButtonPressed* event)
             server->init();
             std::thread running_server_thread([&] {server->run(); });
             running_server_thread.detach();
-            //server->run();
             game_state = mode::GAME;
             
         }
@@ -95,7 +94,6 @@ void Game::mouseButtonPressed(const sf::Event::MouseButtonPressed* event)
             client->connect();
             std::thread running_client_thread([&] {client->run(); });
             running_client_thread.detach();
-            //client->run();
             game_state = mode::GAME;
         }
     }

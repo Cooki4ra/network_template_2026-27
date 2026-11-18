@@ -3,10 +3,13 @@
 #include<iostream>
 #include<atomic>
 #include<thread>
+#include "Board.h"
 
 class Client
 {
 public:
+	Client(std::shared_ptr<Board> _board);
+	~Client();
 	void connect();
 	void input();
 	void run();
@@ -14,6 +17,11 @@ public:
 	std::atomic<bool> connected = false;
 	std::string getInput();
 
+	sf::Packet packData(std::string _string = " ", sf::Vector2f _origin = { -1,-1 }, sf::Vector2f _destination = { -1,-1 })const;
+	void unpackData(sf::Packet _packet, std::string _string, sf::Vector2f _origin, sf::Vector2f _destination);
+
 private:
 	std::unique_ptr<sf::TcpSocket> socket;
+	std::shared_ptr<Board> board;
+	//sf::TcpSocket i_socket;
 };
