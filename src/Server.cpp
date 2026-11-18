@@ -127,3 +127,18 @@ void Server::unpackData(sf::Packet _packet, std::string _string, sf::Vector2f _o
 	_packet >> _string >> _origin.x >> _origin.y >> _destination.x >> _destination.y;
 	std::cout << "Reveived message: " << _string << std::endl;
 }
+
+void Server::send_move(sf::Packet packet)
+{
+	bool continue_receiving = true;
+	while (continue_receiving)
+	{
+		for (std::unique_ptr<sf::TcpSocket>& connection : connections)
+		{
+			if (connection)
+			{
+				connection->send(packet);
+			}
+		}
+	}
+}

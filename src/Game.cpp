@@ -44,7 +44,20 @@ void Game::update(float dt)
 {
     if (game_state == mode::GAME)
     {
-
+        std::vector<Move> moves = board->update();
+        if (!moves.empty())
+        {
+            if (server != nullptr)
+            {
+                sf::Packet packet = server->packData("", moves.back().orgin, moves.back().destination);
+                server->send_move(packet);
+            }
+            else if (client != nullptr)
+            {
+                sf::Packet packet = client->packData("", moves.back().orgin, moves.back().destination);
+                client->send_move(packet);
+            }
+        }
     }
 }
 

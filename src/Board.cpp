@@ -107,6 +107,8 @@ void Board::mouseButtonReleased(const sf::Event::MouseButtonReleased* event)
     {
         std::shared_ptr<Piece> piece = held_piece;
         held_piece = nullptr; // Make sure the mouse gives up the piece before the tile takes over it, in case the mouse moves and changes the piece's position
+        sf::Vector2f origin(piece->getOrigin().x, piece->getOrigin().y);
+        sf::Vector2f destination(piece->getDestination().x,piece->getDestination().y);
         if (hover_tile != nullptr)
         {
             if (!hover_tile->dropPiece(piece)) // If the piece can't be dropped into the tile we're hovering over
@@ -128,13 +130,22 @@ void Board::mouseButtonReleased(const sf::Event::MouseButtonReleased* event)
                 std::cout << "Piece moved from (" << piece->getOrigin().x << "," << piece->getOrigin().y
                     << ") to (" << piece->getDestination().x << "," << piece->getDestination().y << ")." << std::endl;
                 //If the piece has been placed, and it's not where it came from, end the turn
+                Move newMove;
+                newMove.orgin = origin;
+                newMove.destination = destination;
+                moves.push_back(newMove);
+
                 endTurn();
             }
+           
+
         }
         else
         {
             grid[piece->getOrigin().x + grid_size.x * piece->getOrigin().y]->dropPiece(piece);
         }
+
+
     }
 }
 

@@ -83,3 +83,7 @@ void Client::unpackData(sf::Packet _packet, std::string _string, sf::Vector2f _o
 	_packet >> _string >> _origin.x >> _origin.y >> _destination.x >> _destination.y;
 	std::cout << "Reveived message: " << _string << std::endl;
 }
+void Client::send_move(sf::Packet packet)
+{
+	socket->send(packet);
+}
