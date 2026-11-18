@@ -6,6 +6,7 @@
 #include "Board.h"
 #include "Server.h"
 #include "Client.h"
+#include<iostream>
 
 enum class mode
 {

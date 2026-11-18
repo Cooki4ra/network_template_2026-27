@@ -42,7 +42,10 @@ bool Game::init()
 
 void Game::update(float dt)
 {
-
+    if (game_state == mode::GAME)
+    {
+        
+    }
 }
 
 void Game::getInput(const sf::Event& event)
@@ -63,7 +66,9 @@ void Game::render()
     if(game_state == mode::GAME)
     {
         board->render();
+        
     }
+    
 
 }
 
@@ -74,19 +79,24 @@ void Game::mouseButtonPressed(const sf::Event::MouseButtonPressed* event)
     {
         if (host_button->getGlobalBounds().contains(sf::Vector2f(event->position)))
         {
-            game_state = mode::GAME;
             std::cout << "creating server" << std::endl;
             server = std::make_unique<Server>();
             server->init();
-            server->run();
+            std::thread running_server_thread([&] {server->run(); });
+            running_server_thread.detach();
+            //server->run();
+            game_state = mode::GAME;
+            
         }
         else if (join_button->getGlobalBounds().contains(sf::Vector2f(event->position)))
         {
-            game_state = mode::GAME;
             std::cout << "Connecting to server" << std::endl;
             client = std::make_unique<Client>();
             client->connect();
-            client->run();
+            std::thread running_client_thread([&] {client->run(); });
+            running_client_thread.detach();
+            //client->run();
+            game_state = mode::GAME;
         }
     }
 
