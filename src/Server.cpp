@@ -72,8 +72,8 @@ void Server::input()
 void Server::listen(sf::TcpSocket& c_socket)
 {
 	bool continue_receiving = true;
-	char data[1028];
-	std::size_t received;
+	//char data[1028];
+	//std::size_t received;
 	sf::Packet packet;
 	while (continue_receiving)
 	{
@@ -87,7 +87,7 @@ void Server::listen(sf::TcpSocket& c_socket)
 		{
 			unpackData(packet, string, origin, destination);
 		}
-		if (received < 1028) { data[received] = '\0'; }
+		//if (received < 1028) { data[received] = '\0'; }
 		//std::cout << reinterpret_cast<char*>(data) << std::endl;
 
 	}
@@ -125,5 +125,5 @@ sf::Packet Server::packData(std::string _string, sf::Vector2f _origin, sf::Vecto
 void Server::unpackData(sf::Packet _packet, std::string _string, sf::Vector2f _origin, sf::Vector2f _destination)
 {
 	_packet >> _string >> _origin.x >> _origin.y >> _destination.x >> _destination.y;
-
+	std::cout << "Reveived message: " << _string << std::endl;
 }

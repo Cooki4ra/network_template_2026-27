@@ -35,7 +35,7 @@ bool Game::init()
     join_button->setPosition({ 900,200 });
     join_button->setFillColor(sf::Color::White);
     
-
+    
 
     return true;
 }
@@ -80,7 +80,7 @@ void Game::mouseButtonPressed(const sf::Event::MouseButtonPressed* event)
         if (host_button->getGlobalBounds().contains(sf::Vector2f(event->position)))
         {
             std::cout << "creating server" << std::endl;
-            server = std::make_unique<Server>();
+            server = std::make_unique<Server>(board);
             server->init();
             std::thread running_server_thread([&] {server->run(); });
             running_server_thread.detach();
@@ -90,7 +90,7 @@ void Game::mouseButtonPressed(const sf::Event::MouseButtonPressed* event)
         else if (join_button->getGlobalBounds().contains(sf::Vector2f(event->position)))
         {
             std::cout << "Connecting to server" << std::endl;
-            client = std::make_unique<Client>();
+            client = std::make_unique<Client>(board);
             client->connect();
             std::thread running_client_thread([&] {client->run(); });
             running_client_thread.detach();
