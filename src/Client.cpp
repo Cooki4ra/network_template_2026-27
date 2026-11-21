@@ -41,36 +41,46 @@ void Client::run()
 	running = true;
 	std::thread input_thread([&] {input(); });
 	input_thread.detach();
+	std::thread connection_thread([&] {
 	while (running)
 	{
-		char static_buffer[1028];
-		while (connected)
-		{
-			//std::size_t received;
-			//sf::Socket::Status status = socket->receive(static_buffer, 1028, received);
-			sf::Packet packet;
-			sf::Socket::Status status = socket->receive(packet);
-			if (status == sf::Socket::Status::Disconnected)
+		//char static_buffer[1028];
+			while (connected)
 			{
-				connected = false;
-				std::cout << "Clean Disconection" << std::endl;
-				socket->disconnect();
-				break;
-			}
-			else
-			{
-				//if (received < 1028) static_buffer[received] = '\0';
-				//std::cout << static_buffer << std::endl;
-				
-				std::string string;
-				sf::Vector2f origin;
-				sf::Vector2f destination;
+				std::size_t received;
 
-				unpackData(packet, string, origin, destination);
+				sf::Packet packet;
+				sf::Socket::Status status = socket->receive(packet);
+				//sf::Socket::Status status = socket->receive(packet, 1028, received);
+				if (status == sf::Socket::Status::Disconnected)
+				{
+					connected = false;
+					std::cout << "Clean Disconection" << std::endl;
+					socket->disconnect();
+					break;
+				}
+				else
+				{
+					//if (received < 1028) static_buffer[received] = '\0';
+					//std::cout << static_buffer << std::endl;
 
+					unpackData(packet, string, origin, destination);
+					if (string.length() > 0)
+					{
+						std::cout << string << std::endl;
+					}
+
+					if (origin.x >= 0 && destination.x >= 0)
+					{
+						//std::lock_guard<std::mutex> lck(board_mutex);
+						board->moveByCoords(origin, destination);
+					}
+					//std::cout << "creative message: " << std::endl;
+				}
 			}
-		}
 	}
+	});
+	connection_thread.detach();
 }
 sf::Packet Client::packData(std::string _string, sf::Vector2f _origin, sf::Vector2f _destination) const
 {
@@ -78,12 +88,15 @@ sf::Packet Client::packData(std::string _string, sf::Vector2f _origin, sf::Vecto
 	packet << _string << _origin.x << _origin.y << _destination.x << _destination.y;
 	return packet;
 }
-void Client::unpackData(sf::Packet _packet, std::string _string, sf::Vector2f _origin, sf::Vector2f _destination)
+void Client::unpackData(sf::Packet& _packet, std::string& _string, sf::Vector2f& _origin, sf::Vector2f& _destination)
 {
 	_packet >> _string >> _origin.x >> _origin.y >> _destination.x >> _destination.y;
 	std::cout << "Reveived message: " << _string << std::endl;
 }
 void Client::send_move(sf::Packet packet)
 {
-	socket->send(packet);
+	if(connected)
+	{
+		socket->send(packet);
+	}
 }

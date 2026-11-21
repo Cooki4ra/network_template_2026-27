@@ -113,6 +113,8 @@ void Board::mouseButtonReleased(const sf::Event::MouseButtonReleased* event)
         {
             if (!hover_tile->dropPiece(piece)) // If the piece can't be dropped into the tile we're hovering over
             {
+                origin = sf::Vector2f( piece->getOrigin().x, piece->getOrigin().y );
+                destination =  sf::Vector2f(piece->getDestination().x, piece->getDestination().y );
                 // Quick check to see if the piece has a valid origin - not exhaustive, but good enough for now
                 if (piece->getOrigin().x >= 0)
                 {
@@ -129,6 +131,8 @@ void Board::mouseButtonReleased(const sf::Event::MouseButtonReleased* event)
             {
                 std::cout << "Piece moved from (" << piece->getOrigin().x << "," << piece->getOrigin().y
                     << ") to (" << piece->getDestination().x << "," << piece->getDestination().y << ")." << std::endl;
+                origin = sf::Vector2f(piece->getOrigin().x, piece->getOrigin().y);
+                destination = sf::Vector2f(piece->getDestination().x, piece->getDestination().y);
                 //If the piece has been placed, and it's not where it came from, end the turn
                 Move newMove;
                 newMove.orgin = origin;

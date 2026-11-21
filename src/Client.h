@@ -18,11 +18,14 @@ public:
 	std::string getInput();
 
 	sf::Packet packData(std::string _string = " ", sf::Vector2f _origin = { -1,-1 }, sf::Vector2f _destination = { -1,-1 })const;
-	void unpackData(sf::Packet _packet, std::string _string, sf::Vector2f _origin, sf::Vector2f _destination);
+	void unpackData(sf::Packet& _packet, std::string& _string, sf::Vector2f& _origin, sf::Vector2f& _destination);
 	void send_move(sf::Packet packet);
 
 private:
 	std::unique_ptr<sf::TcpSocket> socket;
 	std::shared_ptr<Board> board;
 	//sf::TcpSocket i_socket;
+	std::string string;
+	sf::Vector2f origin;
+	sf::Vector2f destination;
 };

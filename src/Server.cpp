@@ -64,7 +64,7 @@ void Server::input()
 		for (std::unique_ptr<sf::TcpSocket>& connection : connections)
 		{
 			connection->send(packet);
-			//i_socket.send(packet);
+			//_socket.send(packet);
 		}
 	}
 }
@@ -86,6 +86,18 @@ void Server::listen(sf::TcpSocket& c_socket)
 		else
 		{
 			unpackData(packet, string, origin, destination);
+
+			//CHECK IF NEW INFO IN PACKET
+			if (string.length() > 0)
+			{
+				std::cout << string << std::endl;
+			}
+
+			if (origin.x >= 0 && destination.x >= 0)
+			{
+				std::lock_guard<std::mutex> lck(board_mutex);
+				board->moveByCoords(origin, destination);
+			}
 		}
 		//if (received < 1028) { data[received] = '\0'; }
 		//std::cout << reinterpret_cast<char*>(data) << std::endl;
@@ -93,6 +105,7 @@ void Server::listen(sf::TcpSocket& c_socket)
 	}
 	c_socket.disconnect();
 }
+
 void Server::relay(std::string buffer, sf::TcpSocket& c_socket)
 {
 	char* message = reinterpret_cast<char*>(buffer.data());
@@ -103,16 +116,7 @@ void Server::relay(std::string buffer, sf::TcpSocket& c_socket)
 		{
 			connection->send(message, buffer.size());
 		}
-		if (string.length() > 0)
-		{
-			std::cout << string << std::endl;
-		}
 
-		if (origin.x >= 0 && destination.x >= 0)
-		{
-			std::lock_guard<std::mutex> lck(board_mutex);
-			board->moveByCoords(origin, destination);
-		}
 	}
 }
 
@@ -122,7 +126,7 @@ sf::Packet Server::packData(std::string _string, sf::Vector2f _origin, sf::Vecto
 	packet << _string << _origin.x << _origin.y << _destination.x << _destination.y;
 	return packet;
 }
-void Server::unpackData(sf::Packet _packet, std::string _string, sf::Vector2f _origin, sf::Vector2f _destination)
+void Server::unpackData(sf::Packet _packet, std::string& _string, sf::Vector2f& _origin, sf::Vector2f& _destination)
 {
 	_packet >> _string >> _origin.x >> _origin.y >> _destination.x >> _destination.y;
 	std::cout << "Reveived message: " << _string << std::endl;
@@ -130,9 +134,6 @@ void Server::unpackData(sf::Packet _packet, std::string _string, sf::Vector2f _o
 
 void Server::send_move(sf::Packet packet)
 {
-	bool continue_receiving = true;
-	while (continue_receiving)
-	{
 		for (std::unique_ptr<sf::TcpSocket>& connection : connections)
 		{
 			if (connection)
@@ -140,5 +141,4 @@ void Server::send_move(sf::Packet packet)
 				connection->send(packet);
 			}
 		}
-	}
 }
